@@ -1,0 +1,4 @@
+#!/bin/bash
+# export RUBYOPT="--jit --jit-verbose=1"
+export APP_ENV=production
+bundle exec puma -C config/puma.rb "$@"

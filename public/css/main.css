@@ -1,0 +1,80 @@
+body {
+  padding: 0 15px;
+  margin-bottom: 100px;
+}
+a {
+  cursor: pointer;
+}
+.container {
+  padding: 0;
+}
+
+header {
+  margin-top: 25px;
+  text-align: center;
+}
+header h1 {
+  font-size: 4em;
+  font-weight: 700;
+  margin-bottom: 0.5em;
+}
+header h2 {
+  border: none;
+  margin-top: 1em;
+  font-size: 1.5em;
+  font-weight: 400;
+}
+h2 {
+  border-bottom: 1px solid #ccc;
+  margin-top: 2em;
+  padding-bottom: 0.125em;
+}
+progress {
+  width: 100%;
+}
+input[type="submit"] {
+  min-width: 130px;
+}
+
+.input-group {
+  margin-bottom: 10px;
+}
+.form-group .input-group {
+  margin: 0;
+}
+.form-inline {
+  margin-bottom: 15px;
+}
+.form-inline .input-group {
+  margin-top: 0;
+  margin-right: 10px;
+}
+.input-group-prepend label {
+  min-width: 100px;
+  margin: 0;
+}
+.dropdown-toggle {
+  border-radius: 0;
+  padding: 6px 4px;
+}
+*[monospace] {
+  font-family: monospace;
+}
+input[monospace] {
+  min-height: 38px;
+}
+
+.expander {
+  display: none;
+}
+a.blue {
+  color: #007bff !important;
+}
+
+.glyphicon.spin {
+  animation: spin 2s infinite linear;
+}
+@keyframes spin {
+  from { transform: scale(1) rotate(0deg); }
+  to { transform: scale(1) rotate(360deg); }
+}

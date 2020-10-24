@@ -1,0 +1,14 @@
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1beta1
+metadata:
+  name: rssbox
+spec:
+  rules:
+  - host: rssbox.example.com   # <-- update hostname
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: rssbox
+          servicePort: 3000

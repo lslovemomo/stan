@@ -1,0 +1,22 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: rssbox
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rssbox
+  template:
+    metadata:
+      labels:
+        app: rssbox
+    spec:
+      containers:
+      - name: rssbox
+        image: stefansundin/rssbox
+        imagePullPolicy: Always
+        envFrom:
+        - configMapRef:
+            name: rssbox

@@ -1,0 +1,58 @@
+<%- content_type :atom -%>
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>youtube:<%= @channel_id %></id>
+  <title><%= @title %></title>
+  <icon>https://s.ytimg.com/yts/img/favicon_48-vfl1s0rGh.png</icon>
+  <link href="<%= request.original_url.esc %>" rel="self" />
+  <link href="https://www.youtube.com/channel/<%= @channel_id %><%= Addressable::URI.new(path: "/search", query: "query=#{@query}").normalize.to_s if @query %>" rel="alternate" type="text/html" />
+  <link href="https://www.youtube.com/feeds/videos.xml?channel_id=<%= @channel_id %>" rel="alternate" type="text/xml" />
+  <updated><%= @data[0]["snippet"]["publishedAt"] if @data[0] %></updated>
+<%-
+@data.each do |video|
+  id_extra = content_extra = nil
+  duration = video["contentDetails"]["duration"].parse_pt
+  title = ""
+  title += "[#{duration.to_duration}] " if duration > 0
+  title += video["snippet"]["title"].to_line
+  updated = video["snippet"]["publishedAt"]
+  if video.has_key?("liveStreamingDetails")
+    if video["liveStreamingDetails"].has_key?("actualEndTime")
+      updated = Time.parse(video["liveStreamingDetails"]["actualEndTime"])
+      id_extra = ":completed:#{updated}"
+      title += " (completed)"
+      content_extra = "<p>Live broadcast completed at: #{updated.readable(@tz)}.</p>"
+    elsif video["liveStreamingDetails"].has_key?("actualStartTime")
+      updated = Time.parse(video["liveStreamingDetails"]["actualStartTime"])
+      id_extra = ":started:#{updated}"
+      title += " (started)"
+      content_extra = "<p>Live broadcast started at: #{updated.readable(@tz)}.</p>"
+    elsif video["liveStreamingDetails"].has_key?("scheduledStartTime")
+      updated = Time.parse(video["liveStreamingDetails"]["scheduledStartTime"])
+      id_extra = ":scheduled:#{updated}"
+      title += " (scheduled for #{updated.readable(@tz)})"
+      content_extra = <<~EOF
+        <p>Live broadcast scheduled to start at: #{updated.readable(@tz)}.</p>
+        <iframe width="640" height="50" src="#{request.root_url}/countdown.html?date=#{updated}" frameborder="0" scrolling="yes" referrerpolicy="no-referrer"></iframe>
+      EOF
+    end
+  end
+-%>
+
+  <entry>
+    <id>youtube:video:<%= video["id"] %><%= id_extra %><%= ":#{params[:cachebuster]}" if params[:cachebuster] %></id>
+    <title><%= title.esc %></title>
+    <link href="https://www.youtube.com/watch?v=<%= video["id"] %>" />
+    <updated><%= updated %></updated>
+    <author><name><%= @username.esc %></name></author>
+    <content type="html">
+<%= <<~EOF.esc
+  <iframe width="640" height="360" src="https://www.youtube.com/embed/#{video["id"]}?rel=0" frameborder="0" scrolling="no" allowfullscreen referrerpolicy="no-referrer"></iframe>
+  #{content_extra}
+  #{video["snippet"]["description"].linkify.to_paragraphs}
+EOF
+-%>
+    </content>
+  </entry>
+<%- end -%>
+</feed>

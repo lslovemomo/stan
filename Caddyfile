@@ -1,0 +1,10 @@
+# https://caddyserver.com/docs/caddyfile/directives
+
+http://localhost {
+  reverse_proxy http://localhost:3000
+}
+
+# https://localhost {
+#   tls internal
+#   reverse_proxy http://localhost:3000
+# }
